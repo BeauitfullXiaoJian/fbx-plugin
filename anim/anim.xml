@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="popmenu_animation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/popup</item>
+        <item name="android:windowExitAnimation">@anim/popdown</item>
+    </style>
+    <style name="fbx_theme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#51a2f2</item>
+        <item name="colorPrimaryDark">#51a2f2</item>
+        <item name="colorAccent">#51a2f2</item>
+    </style>
+</resources>

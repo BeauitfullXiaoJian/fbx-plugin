@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+    xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    id="fbx-plugin"
+    version="0.0.2">
+    <name>FBX_PLUGIN</name>
+    <author>cool1024</author>
+    <license>Apache 2.0 License</license>
+    <engines>
+        <engine name="cordova" version=">=7.1.0"/>
+        <engine name="cordova-android" version=">=6.3.0" />
+    </engines>
+    <js-module src="plugin.js" name="FBX">
+        <clobbers target="FBX" />
+    </js-module>
+    <!-- android -->
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="FbxPlugin">
+                <param name="android-package" value="com.fbx.FbxPlugin" />
+            </feature>
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <activity android:name="com.fbx.LiveActivity" 
+                    android:screenOrientation="portrait" 
+                    android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            <service android:enabled="true" 
+                    android:exported="true" 
+                    android:name="com.fbx.DownloadService" />
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <!-- 权限列表 -->
+            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+            <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+            <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+            <uses-permission android:name="android.permission.RECORD_AUDIO" />
+            <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
+            <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
+            <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+        </config-file>
+        <!-- Drawable -->
+        <source-file src="drawable/caret.xml" target-dir="res/drawable" />            
+        <source-file src="drawable/ic_play.xml" target-dir="res/drawable" />
+        <source-file src="drawable/circle_bg.xml" target-dir="res/drawable" />        
+        <source-file src="drawable/ic_plus.xml" target-dir="res/drawable" />
+        <source-file src="drawable/control.png" target-dir="res/drawable" />
+        <source-file src="drawable/ic_reduce.xml" target-dir="res/drawable" />
+        <source-file src="drawable/down.png" target-dir="res/drawable" />
+        <source-file src="drawable/ic_start.xml" target-dir="res/drawable" />
+        <source-file src="drawable/ic_video.xml" target-dir="res/drawable" />
+        <source-file src="drawable/ic_back.xml" target-dir="res/drawable" />          
+        <source-file src="drawable/left.png" target-dir="res/drawable" />
+        <source-file src="drawable/ic_close.xml" target-dir="res/drawable" />         
+        <source-file src="drawable/lost.png" target-dir="res/drawable" />
+        <source-file src="drawable/ic_cut.xml" target-dir="res/drawable" />           
+        <source-file src="drawable/radius_btn.xml" target-dir="res/drawable" />
+        <source-file src="drawable/ic_fullscreen.xml" target-dir="res/drawable" />    
+        <source-file src="drawable/radius_item.xml" target-dir="res/drawable" />
+        <source-file src="drawable/ic_go.xml" target-dir="res/drawable" />            
+        <source-file src="drawable/radius_label.xml" target-dir="res/drawable" />
+        <source-file src="drawable/ic_help.xml" target-dir="res/drawable" />          
+        <source-file src="drawable/radius_popup.xml" target-dir="res/drawable" />
+        <source-file src="drawable/ic_logo.xml" target-dir="res/drawable" />          
+        <source-file src="drawable/right.png" target-dir="res/drawable" />
+        <source-file src="drawable/ic_mic.xml" target-dir="res/drawable" />           
+        <source-file src="drawable/talk.png" target-dir="res/drawable" />
+        <source-file src="drawable/ic_pause.xml" target-dir="res/drawable" />         
+        <source-file src="drawable/up.png" target-dir="res/drawable" />
+        <source-file src="drawable/ic_picture.xml" target-dir="res/drawable" />
+        <!-- Layout -->
+        <source-file src="layout/activity_live.xml" target-dir="res/layout" />
+        <source-file src="layout/camera_card.xml" target-dir="res/layout" />
+        <source-file src="layout/popup_center_control.xml" target-dir="res/layout" />
+        <source-file src="layout/popup_cut_modal.xml" target-dir="res/layout" />
+        <source-file src="layout/popup_select_modal.xml" target-dir="res/layout" />
+        <source-file src="layout/popup_talk_control.xml" target-dir="res/layout" />
+        <source-file src="layout/popup_tool_control.xml" target-dir="res/layout" />
+        <!-- Anim -->
+        <source-file src="anim/popup.xml" target-dir="res/anim" />
+        <source-file src="anim/popdown.xml" target-dir="res/anim" />
+        <source-file src="anim/anim.xml" target-dir="res/values" />
+        <!-- Java -->
+        <source-file src="src/ApiResponse.java" target-dir="src/com/fbx" />
+        <source-file src="src/CameraData.java" target-dir="src/com/fbx" />
+        <source-file src="src/CameraDataTool.java" target-dir="src/com/fbx" />
+        <source-file src="src/ControlPopupWindow.java" target-dir="src/com/fbx" />
+        <source-file src="src/CutPopupWindow.java" target-dir="src/com/fbx" />
+        <source-file src="src/DownloadService.java" target-dir="src/com/fbx" />
+        <source-file src="src/FbxPlugin.java" target-dir="src/com/fbx" />
+        <source-file src="src/LiveActivity.java" target-dir="src/com/fbx" />
+        <source-file src="src/SelectPopupWindow.java" target-dir="src/com/fbx" />
+        <source-file src="src/StoreData.java" target-dir="src/com/fbx" />
+        <source-file src="src/TalkPopupWindow.java" target-dir="src/com/fbx" />
+        <!-- Library -->
+        <source-file src="libs/EZOpenSDK.jar" target-dir="libs" />
+        <source-file src="libs/gson.jar" target-dir="libs" />
+        <source-file src="libs/jmdns.jar" target-dir="libs" />
+        <source-file src="libs/universal-image-loader-1.9.5.jar" target-dir="libs" />
+        <source-file src="libs/armeabi-v7a" target-dir="libs" />
+        <framework src="src/config.gradle" custom="true" type="gradleReference"/>
+    </platform>
+    <!-- ios -->
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="FbxPlugin">
+                <param name="ios-package" value="FbxPlugin" />
+            </feature>
+        </config-file>
+        <!-- 相关代码 -->
+        <header-file src="ios/FbxPlugin.h" />
+        <source-file src="ios/FbxPlugin.m" />
+        <!-- 权限配置  -->
+        <config-file target="*-Info.plist" parent="NSPhotoLibraryUsageDescription">
+            <string>需要访问您的相册用于查看视频截图</string>
+        </config-file>
+        <config-file target="*-Info.plist" parent="NSPhotoLibraryAddUsageDescription">
+            <string>需要使用您的相册用于视频播放进行截图</string>
+        </config-file>
+        <config-file target="*-Info.plist" parent="NSMicrophoneUsageDescription">
+            <string>语音对讲功能需要使用您的麦克风</string>
+        </config-file>
+        <framework src="ios/EZOpenSDKFramework.framework" custom="true"/>
+        <framework src="CoreMedia.framework" /> 
+        <framework src="AudioToolbox.framework" />
+        <framework src="VideoToolbox.framework" />
+        <framework src="GLKit.framework" />
+        <framework src="OpenAL.framework" />
+        <framework src="MobileCoreServices.framework" />
+        <framework src="SystemConfiguration.framework" />
+        <framework src="CoreTelephony.framework" />
+        <framework src="AVFoundation.framework" />
+        <framework src="libz.tbd" />
+        <framework src="libbz2.tbd" />
+        <framework src="libiconv.2.4.0.tbd" />
+        <framework src="libc++.tbd" />
+    </platform>
+</plugin>

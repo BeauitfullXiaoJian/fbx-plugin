@@ -1,0 +1,14 @@
+{
+    "name": "fbx-plugin",
+    "version": "0.0.2",
+    "author": "cool1024",
+    "description": "",
+    "dependencies": {},
+    "cordova": {
+        "id": "fbx-plugin",
+        "platforms": [
+            "android",
+            "ios"
+        ]
+    }
+}
