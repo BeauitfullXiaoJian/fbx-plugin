@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JsResult;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebStorage;
@@ -19,7 +20,9 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
-import com.dobay.dudao.R;
+import java.util.Map;
+
+import io.ionic.starter.R;
 
 public class SelectPopupWindow extends PopupWindow {
     public static final String TAG = "PopupWindowLog";
@@ -64,12 +67,12 @@ public class SelectPopupWindow extends PopupWindow {
     }
 
     private void initView() {
-        WebSettings webSettings = mWebView.getSettings();
+        final WebSettings webSettings = mWebView.getSettings();
         webSettings.setAllowUniversalAccessFromFileURLs(true);
         webSettings.setAllowFileAccessFromFileURLs(true);
         webSettings.setAllowContentAccess(true);
-        webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(false);
         mWebView.setWebChromeClient(new WebChromeClient() {
 
@@ -93,16 +96,18 @@ public class SelectPopupWindow extends PopupWindow {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
-                if (newProgress >= 100) {
+                if(newProgress>=100){
                     mProgressBar.setVisibility(View.INVISIBLE);
+                    if (mParentPopupWindow.mSelectOptionsStr == null) {
+                        Log.d(TAG, "清空缓存");
+                        mWebView.evaluateJavascript("window.clearCach()",null);
+                        mWebView.loadUrl("file:///android_asset/www/dist/index.html?" + LiveActivity.mApiData);
+                        mParentPopupWindow.mSelectOptionsStr = "";
+                    }
                 }
             }
         });
         Log.d(TAG, LiveActivity.mApiData);
         mWebView.loadUrl("file:///android_asset/www/dist/index.html?" + LiveActivity.mApiData);
-        if (mParentPopupWindow.mSelectOptionsStr == null) {
-            Log.d(TAG,"清空缓存");
-            WebStorage.getInstance().deleteOrigin("file:///android_asset/www/dist/index.html");
-        }
     }
 }
