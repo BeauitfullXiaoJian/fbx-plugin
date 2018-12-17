@@ -22,7 +22,7 @@ import org.w3c.dom.Text;
 
 import java.util.Map;
 
-import io.ionic.starter.R;
+import com.dobay.dudao.R;
 
 public class SelectPopupWindow extends PopupWindow {
     public static final String TAG = "PopupWindowLog";
