@@ -2,7 +2,7 @@
 <plugin
     xmlns="http://apache.org/cordova/ns/plugins/1.0"
     id="fbx-plugin"
-    version="0.0.7">
+    version="0.0.8">
     <name>FBX_PLUGIN</name>
     <author>cool1024</author>
     <license>Apache 2.0 License</license>
