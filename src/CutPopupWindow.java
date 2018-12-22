@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.Calendar;
 
 import com.dobay.dudao.R;
+
 import okhttp3.Call;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -92,7 +93,7 @@ public class CutPopupWindow extends PopupWindow implements View.OnClickListener,
         mSelectOptionsView = (TextView) mPopupView.findViewById(R.id.select_text);
         mContentView = (EditText) mPopupView.findViewById(R.id.edit_content);
         mLoadingView = mPopupView.findViewById(R.id.loading_bar);
-        mTotalView =  mPopupView.findViewById(R.id.text_total);
+        mTotalView = mPopupView.findViewById(R.id.text_total);
         mPopupView.findViewById(R.id.submit_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -116,6 +117,7 @@ public class CutPopupWindow extends PopupWindow implements View.OnClickListener,
         });
         mPopupView.findViewById(R.id.select_btn).setOnClickListener(CutPopupWindow.this);
         mPopupView.findViewById(R.id.btn_close).setOnClickListener(CutPopupWindow.this);
+        mImageView.setOnClickListener(CutPopupWindow.this);
         mContentView.addTextChangedListener(CutPopupWindow.this);
         mCameraTitleView.setText(mParentActivity.mActiveCamera.getCameraTitle());
         mTimeView.setText(timeString());
@@ -128,7 +130,7 @@ public class CutPopupWindow extends PopupWindow implements View.OnClickListener,
 
     @Override
     public void afterTextChanged(Editable editable) {
-        mTotalView.setText( editable.length() + "/250");
+        mTotalView.setText(editable.length() + "/250");
     }
 
     @Override
@@ -152,6 +154,11 @@ public class CutPopupWindow extends PopupWindow implements View.OnClickListener,
             case R.id.btn_close:
                 dismiss();
                 break;
+            case R.id.picture_view:
+                new DrawPicturePopupWindow(mParentActivity, CutPopupWindow.this, mPicture)
+                        .showAtLocation(mParentActivity.findViewById(R.id.main_view),
+                                Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+                break;
         }
     }
 
@@ -174,8 +181,8 @@ public class CutPopupWindow extends PopupWindow implements View.OnClickListener,
                 OkHttpClient client = new OkHttpClient();
                 MultipartBody multipartBody = new MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
-                        .addFormDataPart("company_id", String.valueOf(formParams.get("company_id").getAsInt()))
-                        .addFormDataPart("shop_id", String.valueOf(formParams.get("shop_id").getAsInt()))
+                        .addFormDataPart("company_id", String.valueOf(mParentActivity.mStoreData.getCompanyId()))
+                        .addFormDataPart("shop_id", String.valueOf(mParentActivity.mStoreData.getStoreId()))
                         .addFormDataPart("status", String.valueOf(formParams.get("status").getAsInt()))
                         .addFormDataPart("reason", formParams.get("reason").toString())
                         .addFormDataPart("answer", formParams.get("answer").toString())
@@ -244,6 +251,11 @@ public class CutPopupWindow extends PopupWindow implements View.OnClickListener,
         });
         Log.d(TAG, "请求失败");
         mParentActivity.showToast("数据通信异常，请检查您的网络");
+    }
+
+    public void updatePicture(Bitmap picture){
+        mPicture = picture;
+        mImageView.setImageBitmap(mPicture);
     }
 
     public static void i(String tag, String msg) {

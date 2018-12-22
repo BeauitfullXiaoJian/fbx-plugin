@@ -2,7 +2,7 @@
 <plugin
     xmlns="http://apache.org/cordova/ns/plugins/1.0"
     id="fbx-plugin"
-    version="0.0.5">
+    version="0.0.7">
     <name>FBX_PLUGIN</name>
     <author>cool1024</author>
     <license>Apache 2.0 License</license>
@@ -71,6 +71,9 @@
         <source-file src="drawable/ic_pause.xml" target-dir="res/drawable" />         
         <source-file src="drawable/up.png" target-dir="res/drawable" />
         <source-file src="drawable/ic_picture.xml" target-dir="res/drawable" />
+        <source-file src="drawable/ic_check_black_24dp.xml" target-dir="res/drawable" />
+        <source-file src="drawable/ic_redo_black_24dp.xml" target-dir="res/drawable" />
+        <source-file src="drawable/ic_save_black_24dp.xml" target-dir="res/drawable" />
         <!-- Layout -->
         <source-file src="layout/activity_live.xml" target-dir="res/layout" />
         <source-file src="layout/camera_card.xml" target-dir="res/layout" />
@@ -79,6 +82,7 @@
         <source-file src="layout/popup_select_modal.xml" target-dir="res/layout" />
         <source-file src="layout/popup_talk_control.xml" target-dir="res/layout" />
         <source-file src="layout/popup_tool_control.xml" target-dir="res/layout" />
+        <source-file src="layout/popup_image_draw.xml" target-dir="res/layout" />
         <!-- Anim -->
         <source-file src="anim/popup.xml" target-dir="res/anim" />
         <source-file src="anim/popdown.xml" target-dir="res/anim" />
@@ -95,6 +99,7 @@
         <source-file src="src/SelectPopupWindow.java" target-dir="src/com/fbx" />
         <source-file src="src/StoreData.java" target-dir="src/com/fbx" />
         <source-file src="src/TalkPopupWindow.java" target-dir="src/com/fbx" />
+        <source-file src="src/DrawPicturePopupWindow.java" target-dir="src/com/fbx" />
         <!-- Library -->
         <source-file src="libs/EZOpenSDK.jar" target-dir="libs" />
         <source-file src="libs/gson.jar" target-dir="libs" />

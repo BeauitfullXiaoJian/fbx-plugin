@@ -6,10 +6,19 @@ public class StoreData implements Serializable {
 
     private String storeTitle;
     private int storeId;
+    private int companyId;
 
     public StoreData(int storeId, String storeTitle) {
         this.storeId = storeId;
         this.storeTitle = storeTitle;
+    }
+
+    public int getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
     }
 
     public String getStoreTitle() {
