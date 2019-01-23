@@ -1,19 +1,27 @@
 //
-//  FbxPlugin.m
+//  FbxPlugin.h
 //
 //  Created by anasit on 2018/5/12.
 //  Copyright © 2018年 anasit. All rights reserved.
 //
 
-#import "FbxPlugin.h"
+#import <UIKit/UIKit.h>
+#import <Cordova/CDVPlugin.h>
+#import <Photos/Photos.h>
+#import <EZOpenSDKFramework/EZOpenSDK.h>
+#import <EZOpenSDKFramework/EZPlayer.h>
+#import <EZOpenSDKFramework/EZDeviceInfo.h>
 
-@implementation FbxPlugin{
-    CDVPluginResult* pluginResult;
+@interface FbxPlugin : CDVPlugin
+{
 }
 
-- (void)call:(CDVInvokedUrlCommand *)command{
-     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"IOS无关闭方法"];
-     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-}
+- (void)live:(CDVInvokedUrlCommand*)command;
+- (void)hideLive:(CDVInvokedUrlCommand *)command;
+- (void)showLive:(CDVInvokedUrlCommand *)command;
+- (void)cleanPlugin:(CDVInvokedUrlCommand*)command;
+- (void)talk:(CDVInvokedUrlCommand *)command;
+- (void)actionCtrl:(CDVInvokedUrlCommand *)command;
+- (void)getPicture:(CDVInvokedUrlCommand *)command;
 
 @end
