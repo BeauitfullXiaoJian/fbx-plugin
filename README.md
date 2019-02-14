@@ -11,6 +11,20 @@
 ## IOS安装问题
 1. 需要把EZOpenSDKFramework.framework再次添加到Embedded Binaries中
 
+## ANDROID安装问题
+1. framework在cordova-android@~7.0.0报错,只能手动添加了
+```xml
+ <framework src="src/config.gradle" custom="true" type="gradleReference" />
+```
+在build
+```
+android.defaultConfig {
+    vectorDrawables {
+        useSupportLibrary true
+    }
+}
+```
+
 ## 参考代码
 ```js
 window.FBX && window.FBX.call('playback', null, null, [

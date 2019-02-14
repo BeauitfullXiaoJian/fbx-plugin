@@ -2,7 +2,7 @@
 <plugin
     xmlns="http://apache.org/cordova/ns/plugins/1.0"
     id="fbx-plugin"
-    version="0.0.14">
+    version="0.0.18">
     <name>FBX_PLUGIN</name>
     <author>cool1024</author>
     <license>Apache 2.0 License</license>
@@ -84,9 +84,11 @@
         <source-file src="drawable/btn_video_normal.png" target-dir="res/drawable" />
         <source-file src="drawable/btn_video_selected.png" target-dir="res/drawable" />
         <source-file src="drawable/playback.jpg" target-dir="res/drawable" />
+        <source-file src="drawable/ic_video_middle.png" target-dir="res/drawable" />
 
         <!-- Layout -->
         <source-file src="layout/activity_live.xml" target-dir="res/layout" />
+        <source-file src="layout/activity_playback.xml" target-dir="res/layout" />
         <source-file src="layout/camera_card.xml" target-dir="res/layout" />
         <source-file src="layout/popup_center_control.xml" target-dir="res/layout" />
         <source-file src="layout/popup_cut_modal.xml" target-dir="res/layout" />
@@ -123,6 +125,12 @@
         <lib-file src="libs/universal-image-loader-1.9.5.jar" />
         <lib-file src="libs/armeabi-v7a" />
         <framework src="src/config.gradle" custom="true" type="gradleReference" />
+        <!-- <framework src="com.squareup.okhttp3:okhttp:3.11.0" />
+        <framework src="com.android.support:design:23+" />
+        <framework src="com.android.support.constraint:constraint-layout:1.1.3" />
+        <framework src="com.android.support:recyclerview-v7:23+" />
+        <framework src="com.android.support:cardview-v7:23+" />
+        <framework src="com.squareup.picasso:picasso:2.71828" /> -->
     </platform>
     <!-- ios -->
     <platform name="ios">
