@@ -1,8 +1,8 @@
 {
     "name": "fbx-plugin",
-    "version": "0.0.8",
+    "version": "0.0.13",
     "author": "cool1024",
-    "description": "",
+    "description": "cordova plugin for db",
     "dependencies": {},
     "cordova": {
         "id": "fbx-plugin",

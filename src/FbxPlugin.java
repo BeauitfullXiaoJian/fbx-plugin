@@ -13,21 +13,13 @@ import android.util.Log;
 
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
-import org.apache.cordova.CordovaWebView;
-import org.apache.cordova.CordovaInterface;
 
-import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.Manifest;
 import android.content.Context;
 import android.widget.Toast;
-
-import com.google.gson.Gson;
-
-import org.json.JSONObject;
-
 
 public class FbxPlugin extends CordovaPlugin implements ServiceConnection,
         DownloadService.ProgressListener {
@@ -62,10 +54,19 @@ public class FbxPlugin extends CordovaPlugin implements ServiceConnection,
             mainActivity.startActivity(intent);
         } else if (action.equals("update")) {
             Log.d(TAG, "调用应用更新服务");
-            downloadUrl =  args.getString(0);
+            downloadUrl = args.getString(0);
             cordova.requestPermissions(FbxPlugin.this, REQUEST_STORAGE_WRITE,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE});
             Log.d(TAG, "请求本地存储授权");
+        } else if (action.equals("playback")) {
+            Log.d(TAG, "启动摄像头回放页面");
+            Intent intent = new Intent(mainActivity, PlaybackActivity.class);
+            intent.putExtra("appKey", args.getString(0));
+            intent.putExtra("accessToken", args.getString(1));
+            intent.putExtra("cameraName", args.getString(2));
+            intent.putExtra("cameraSeries", args.getString(3));
+            intent.putExtra("cameraNo", args.getInt(4));
+            mainActivity.startActivity(intent);
         }
         return true;
     }

@@ -181,8 +181,8 @@ public class CutPopupWindow extends PopupWindow implements View.OnClickListener,
                 OkHttpClient client = new OkHttpClient();
                 MultipartBody multipartBody = new MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
-                        .addFormDataPart("company_id", String.valueOf(mParentActivity.mStoreData.getCompanyId()))
-                        .addFormDataPart("shop_id", String.valueOf(mParentActivity.mStoreData.getStoreId()))
+                        .addFormDataPart("company_id", String.valueOf(formParams.get("company_id").getAsInt()))
+                        .addFormDataPart("shop_id", String.valueOf(formParams.get("shop_id").getAsInt()))
                         .addFormDataPart("status", String.valueOf(formParams.get("status").getAsInt()))
                         .addFormDataPart("reason", formParams.get("reason").toString())
                         .addFormDataPart("answer", formParams.get("answer").toString())

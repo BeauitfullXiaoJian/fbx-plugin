@@ -2,7 +2,7 @@
 <plugin
     xmlns="http://apache.org/cordova/ns/plugins/1.0"
     id="fbx-plugin"
-    version="0.0.8">
+    version="0.0.13">
     <name>FBX_PLUGIN</name>
     <author>cool1024</author>
     <license>Apache 2.0 License</license>
@@ -24,6 +24,7 @@
             <activity android:name="com.fbx.LiveActivity" 
                     android:screenOrientation="portrait" 
                     android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            <activity android:configChanges="orientation|keyboardHidden|screenSize" android:exported="false" android:launchMode="singleTop" android:name="com.fbx.PlaybackActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
             <service android:enabled="true" 
                     android:exported="true" 
                     android:name="com.fbx.DownloadService" />
@@ -74,6 +75,16 @@
         <source-file src="drawable/ic_check_black_24dp.xml" target-dir="res/drawable" />
         <source-file src="drawable/ic_redo_black_24dp.xml" target-dir="res/drawable" />
         <source-file src="drawable/ic_save_black_24dp.xml" target-dir="res/drawable" />
+        
+        <source-file src="drawable/btn_least.png" target-dir="res/drawable" />
+        <source-file src="drawable/btn_loudest.png" target-dir="res/drawable" />
+        <source-file src="drawable/btn_photo_normal.png" target-dir="res/drawable" />
+        <source-file src="drawable/btn_play_n.png" target-dir="res/drawable" />
+        <source-file src="drawable/btn_stop_n.png" target-dir="res/drawable" />
+        <source-file src="drawable/btn_video_normal.png" target-dir="res/drawable" />
+        <source-file src="drawable/btn_video_selected.png" target-dir="res/drawable" />
+        <source-file src="drawable/playback.jpg" target-dir="res/drawable" />
+
         <!-- Layout -->
         <source-file src="layout/activity_live.xml" target-dir="res/layout" />
         <source-file src="layout/camera_card.xml" target-dir="res/layout" />
@@ -100,16 +111,22 @@
         <source-file src="src/StoreData.java" target-dir="src/com/fbx" />
         <source-file src="src/TalkPopupWindow.java" target-dir="src/com/fbx" />
         <source-file src="src/DrawPicturePopupWindow.java" target-dir="src/com/fbx" />
+
+        <!-- 新增回放相关 -->
+        <source-file src="src/PlaybackActivity.java" target-dir="src/com/fbx" />
+        <source-file src="src/ScalableTimeBar.java" target-dir="src/com/fbx" />
+
         <!-- Library -->
-        <source-file src="libs/EZOpenSDK.jar" target-dir="libs" />
-        <source-file src="libs/gson.jar" target-dir="libs" />
-        <source-file src="libs/jmdns.jar" target-dir="libs" />
-        <source-file src="libs/universal-image-loader-1.9.5.jar" target-dir="libs" />
-        <source-file src="libs/armeabi-v7a" target-dir="libs" />
-        <framework src="src/config.gradle" custom="true" type="gradleReference"/>
+        <lib-file src="libs/EZOpenSDK.jar" />
+        <lib-file src="libs/gson.jar" />
+        <lib-file src="libs/jmdns.jar" />
+        <lib-file src="libs/universal-image-loader-1.9.5.jar" />
+        <lib-file src="libs/armeabi-v7a" />
+        <framework src="src/config.gradle" custom="true" type="gradleReference" />
     </platform>
     <!-- ios -->
     <platform name="ios">
+        <hook type="after_plugin_install" src="install.js" />
         <config-file target="config.xml" parent="/*">
             <feature name="FbxPlugin">
                 <param name="ios-package" value="FbxPlugin" />
@@ -118,6 +135,15 @@
         <!-- 相关代码 -->
         <header-file src="ios/FbxPlugin.h" />
         <source-file src="ios/FbxPlugin.m" />
+        <header-file src="ios/DatePickerController.h" />
+        <source-file src="ios/DatePickerController.m" />
+        <header-file src="ios/EOAVolumeUtil.h" />
+        <source-file src="ios/EOAVolumeUtil.m" />
+        <header-file src="ios/EZPlaybackProgressBar.h" />
+        <source-file src="ios/EZPlaybackProgressBar.m" />
+        <header-file src="ios/PlaybackViewController.h" />
+        <source-file src="ios/PlaybackViewController.m" />
+        <resource-file src="ios/PlaybackStoryboard.storyboard" />
         <!-- 权限配置  -->
         <config-file target="*-Info.plist" parent="NSPhotoLibraryUsageDescription">
             <string>需要访问您的相册用于查看视频截图</string>
