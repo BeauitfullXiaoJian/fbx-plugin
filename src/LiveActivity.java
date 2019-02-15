@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.dobay.dudao.R;
+
 import okhttp3.Call;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -68,6 +69,8 @@ public class LiveActivity extends AppCompatActivity implements Handler.Callback,
     public static String mUploadUrl;
     public static String mFormUrl;
     public static String mApiData;
+    public static String sAppKey;
+    public static String sAccessToken;
     public EZPlayer mActivePlayer;
     public EZPlayer mActiveTalker;
     private int mPlayerStatus;
@@ -212,6 +215,21 @@ public class LiveActivity extends AppCompatActivity implements Handler.Callback,
                     Log.d(TAG, "展开工具栏");
                     showToolPad();
                 }
+                break;
+            }
+            // 进入回放页面
+            case R.id.menu_playback: {
+                if (mActiveCamera == null) {
+                    showToast("当前没有可用摄像头，无法回放");
+                    return;
+                }
+                Intent intent = new Intent(this, PlaybackActivity.class);
+                intent.putExtra("cameraName", mActiveCamera.getCameraTitle());
+                intent.putExtra("cameraSeries", mActiveCamera.getCameraSns());
+                intent.putExtra("cameraNo", mActiveCamera.getCameraNo());
+                intent.putExtra("appKey", sAppKey);
+                intent.putExtra("accessToken", sAccessToken);
+                startActivity(intent);
                 break;
             }
             // 弹出语音控制台
@@ -396,6 +414,7 @@ public class LiveActivity extends AppCompatActivity implements Handler.Callback,
         mPlayContainerView.setOnTouchListener(LiveActivity.this);
         findViewById(R.id.btn_fullscreen).setOnClickListener(LiveActivity.this);
         findViewById(R.id.btn_back).setOnClickListener(LiveActivity.this);
+        findViewById(R.id.menu_playback).setOnClickListener(LiveActivity.this);
         findViewById(R.id.menu_check).setOnClickListener(LiveActivity.this);
         findViewById(R.id.menu_talk).setOnClickListener(LiveActivity.this);
         findViewById(R.id.menu_control).setOnClickListener(LiveActivity.this);
@@ -425,6 +444,8 @@ public class LiveActivity extends AppCompatActivity implements Handler.Callback,
         EZOpenSDK.enableP2P(false);
         EZOpenSDK.initLib(getApplication(), appKey);
         EZOpenSDK.getInstance().setAccessToken(accessToken);
+        sAppKey = appKey;
+        sAccessToken = accessToken;
     }
 
     /**
@@ -675,18 +696,18 @@ public class LiveActivity extends AppCompatActivity implements Handler.Callback,
             ImageLoader.getInstance().init(config);
             ImageLoader imageLoader = ImageLoader.getInstance();
             if (cameraData.getOnline() && cameraData.getSnapshotUrl() != null) {
-                try{
+                try {
                     Picasso.get().load(cameraData.getSnapshotUrl())
-                            .resize(600,320)
+                            .resize(600, 320)
                             .placeholder(R.drawable.ic_play)
                             .into(viewHolder.cardImageView);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 viewHolder.cardStatusView.setVisibility(View.VISIBLE);
             } else {
                 Picasso.get().load(R.drawable.lost)
-                        .resize(600,320)
+                        .resize(600, 320)
                         .into(viewHolder.cardImageView);
                 viewHolder.cardStatusView.setVisibility(View.INVISIBLE);
             }

@@ -311,8 +311,13 @@ public class PlaybackActivity extends AppCompatActivity implements
     private void startPlay(Calendar startTime, Calendar endTime) {
         if (mEZPlayer == null) {
             mEZPlayer = EZOpenSDK.getInstance().createPlayer(mCameraSeries, mCameraNo);
-            mEZPlayer.setSurfaceHold(mPlayView.getHolder());
-            mEZPlayer.setHandler(new Handler(PlaybackActivity.this));
+            if (mEZPlayer == null) {
+                // 获取失败？？？？
+                Log.d(TAG, "播放器是空的");
+                showToast("萤石云服务异常～");
+            }
+             mEZPlayer.setSurfaceHold(mPlayView.getHolder());
+             mEZPlayer.setHandler(new Handler(PlaybackActivity.this));
         }
         mEZPlayer.startPlayback(startTime, endTime);
         showLoading();
