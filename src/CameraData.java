@@ -16,19 +16,22 @@ public class CameraData implements Serializable {
     private Boolean online;
     // 设备号
     private int cameraNo;
+    // 店铺ID
+    private int shopId; 
 
     public CameraData(String cameraSns) {
         this.cameraSns = cameraSns;
         this.online = true;
     }
 
-    public CameraData(int cameraId, String cameraSns, int cameraNo, String cameraTitle, String snapshotUrl, Boolean isOnline) {
+    public CameraData(int cameraId, String cameraSns, int cameraNo, String cameraTitle, String snapshotUrl, Boolean isOnline,int shopId) {
         this.cameraSns = cameraSns;
-        this.cameraTitle = cameraTitle;
+        this.cameraTitle = cameraTitle;             
         this.snapshotUrl = snapshotUrl;
         this.online = isOnline;
         this.cameraNo = cameraNo;
         this.cameraId = cameraId;
+        this.shopId = shopId;
     }
 
     public String getCameraSns() {
@@ -67,6 +70,14 @@ public class CameraData implements Serializable {
         this.cameraId = cameraId;
     }
 
+    public int getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(int shopId) {
+        this.shopId = shopId;
+    }
+
     public void setCameraNo(int cameraNo) {
         this.cameraNo = cameraNo;
     }
@@ -78,10 +89,10 @@ public class CameraData implements Serializable {
     public int getCameraNo() {
         return cameraNo;
     }
-
+     
     public void getCameraNo(int cameraNo) {
         this.cameraNo = cameraNo;
     }
-
-
 }
+
+

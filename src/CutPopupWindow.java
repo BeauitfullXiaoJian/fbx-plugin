@@ -28,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 
+import com.dobay.dudao.MainActivity;
 import com.dobay.dudao.R;
 
 import okhttp3.Call;
@@ -68,9 +69,11 @@ public class CutPopupWindow extends PopupWindow implements View.OnClickListener,
     private TextView mTimeView;
     private EditText mContentView;
     private TextView mTotalView;
+    private int shopId;
 
-    CutPopupWindow(LiveActivity context, Bitmap picture) {
+    CutPopupWindow(LiveActivity context, Bitmap picture, int shopId) {
         super(context);
+        this.shopId = shopId;
         mParentActivity = context;
         mPicture = picture;
         LayoutInflater inflater = (LayoutInflater) context
@@ -147,7 +150,7 @@ public class CutPopupWindow extends PopupWindow implements View.OnClickListener,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.select_btn:
-                new SelectPopupWindow(mParentActivity, CutPopupWindow.this)
+                new SelectPopupWindow(mParentActivity, CutPopupWindow.this, this.shopId)
                         .showAtLocation(mParentActivity.findViewById(R.id.main_view),
                                 Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                 break;
@@ -163,51 +166,37 @@ public class CutPopupWindow extends PopupWindow implements View.OnClickListener,
     }
 
     private void submitForm() {
-        String content = mContentView.getText().toString();
-        if (mSelectOptionsStr == null) {
-            mParentActivity.showToast("必须选择一个考评问题才能提交～");
-        } else {
-            JsonParser parser = new JsonParser();
-            JsonObject formParams = parser.parse(mSelectOptionsStr).getAsJsonObject();
-            try {
-                String savePath = mParentActivity.getFilesDir().getAbsolutePath();
-                String filePath = savePath + "/" + System.currentTimeMillis() + ".jpg";
-                File file = new File(filePath);
-                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
-                mPicture.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-                bos.flush();
-                bos.close();
-                JsonObject authObject = ApiResponse.getAuthHeader(LiveActivity.mApiData);
-                OkHttpClient client = new OkHttpClient();
-                MultipartBody multipartBody = new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("company_id", String.valueOf(formParams.get("company_id").getAsInt()))
-                        .addFormDataPart("shop_id", String.valueOf(formParams.get("shop_id").getAsInt()))
-                        .addFormDataPart("status", String.valueOf(formParams.get("status").getAsInt()))
-                        .addFormDataPart("reason", formParams.get("reason").toString())
-                        .addFormDataPart("answer", formParams.get("answer").toString())
-                        .addFormDataPart("deductReason", formParams.get("deductReason").toString())
-                        .addFormDataPart("remarks", formParams.get("remarks").toString())
-                        .addFormDataPart("content", content)
-                        .addFormDataPart("screenshot_img", file.getName(),
-                                RequestBody.create(MultipartBody.FORM, file))
-                        .build();
-                Log.d(TAG, String.valueOf(formParams.get("company_id").getAsInt()));
-                Log.d(TAG, String.valueOf(formParams.get("shop_id").getAsInt()));
-                Request request = new Request.Builder()
-                        .addHeader("ng-params-one", authObject.get("ng-params-one").getAsString())
-                        .addHeader("ng-params-two", authObject.get("ng-params-two").getAsString())
-                        .addHeader("ng-params-three", authObject.get("ng-params-three").getAsString())
-                        .url(LiveActivity.mFormUrl)
-                        .post(multipartBody)
-                        .build();
-                Call call = client.newCall(request);
-                call.enqueue(CutPopupWindow.this);
-                mLoadingView.setVisibility(View.VISIBLE);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        Log.d(TAG,String.valueOf(mSelectOptionsStr==null)); 
+        // 上传图片
+        try {
+            String savePath = mParentActivity.getFilesDir().getAbsolutePath();
+            String filePath = savePath + "/" + System.currentTimeMillis() + ".jpg";
+            Log.d(TAG, "快照保存路径:" + filePath);
+            File file = new File(filePath);
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+            mPicture.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            bos.flush();
+            bos.close();
+            JsonObject authObject = ApiResponse.getAuthHeader(LiveActivity.mApiData);
+            OkHttpClient client = new OkHttpClient();
+            MultipartBody multipartBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("pic", file.getName(),
+                            RequestBody.create(MultipartBody.FORM, file))
+                    .build();
+            Request request = new Request.Builder()
+                    .addHeader("ng-params-one", authObject.get("ng-params-one").getAsString())
+                    .addHeader("ng-params-two", authObject.get("ng-params-two").getAsString())
+                    .addHeader("ng-params-three", authObject.get("ng-params-three").getAsString())
+                    .url(LiveActivity.mCutImageUrl)
+                    .post(multipartBody)
+                    .build();
+            Call call = client.newCall(request);
+            call.enqueue(CutPopupWindow.this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }        
+            mLoadingView.setVisibility(View.VISIBLE);    
     }
 
     @Override
@@ -225,14 +214,25 @@ public class CutPopupWindow extends PopupWindow implements View.OnClickListener,
                 String apiString = responseBody.string();
                 i(TAG, apiString);
                 ApiResponse apiResponse = new ApiResponse(apiString);
-                mParentActivity.showToast(apiResponse.getMessage());
                 if (apiResponse.getResult()) {
+                    mParentActivity.showToast("已保存至考评库");
+                    String imgUrl = apiResponse.getData().getAsString();
+                    Log.d("TEST",imgUrl);
+                    // 存储localStorage
+                    MainActivity.getMainActivity().loadJs("window.nativeCallJs.setCheckStorage('"
+                        +mSelectOptionsStr+"','"+mContentView.getText().toString()
+                        +"','"+imgUrl+"',"+mParentActivity.mStoreData.getStoreId()+",'"
+                        +mParentActivity.mStoreData.getStoreTitle()+"','"
+                        +mParentActivity.mActiveCamera.getCameraTitle()+"',"+LiveActivity.mTermPlanId+","
+                        +LiveActivity.mTermId+",'"+LiveActivity.mTermName+"')");
                     mParentActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             dismiss();
                         }
                     });
+                }else{
+                    mParentActivity.showToast(apiResponse.getMessage());
                 }
             } catch (Exception e) {
                 e.printStackTrace();

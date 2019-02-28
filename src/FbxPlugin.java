@@ -11,6 +11,7 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.dobay.dudao.MainActivity;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
 
@@ -49,8 +50,11 @@ public class FbxPlugin extends CordovaPlugin implements ServiceConnection,
             intent.putExtra("storeData", storeData);
             intent.putExtra("cameraData", args.getString(3));
             intent.putExtra("uploadUrl", args.getString(4));
-            intent.putExtra("formUrl", args.getString(5));
+            intent.putExtra("cutImageUrl", args.getString(5));
             intent.putExtra("apiData", args.getString(6));
+            intent.putExtra("termPlanId",args.getString(7));
+            intent.putExtra("termId",args.getString(8));
+            intent.putExtra("termName",args.getString(9));
             mainActivity.startActivity(intent);
         } else if (action.equals("update")) {
             Log.d(TAG, "调用应用更新服务");
@@ -89,8 +93,7 @@ public class FbxPlugin extends CordovaPlugin implements ServiceConnection,
             } else {
                 // 手动通知授权成功
                 try {
-                    onRequestPermissionResult(INSTALL_PACKAGES_REQUEST_CODE,
-                            new String[]{},
+                    onRequestPermissionResult(INSTALL_PACKAGES_REQUEST_CODE, new String[]{},
                             new int[]{PackageManager.PERMISSION_GRANTED});
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -99,8 +102,7 @@ public class FbxPlugin extends CordovaPlugin implements ServiceConnection,
 
         } else {
             try {
-                onRequestPermissionResult(INSTALL_PACKAGES_REQUEST_CODE,
-                        new String[]{},
+                onRequestPermissionResult(INSTALL_PACKAGES_REQUEST_CODE, new String[]{},
                         new int[]{PackageManager.PERMISSION_GRANTED});
             } catch (Exception e) {
                 e.printStackTrace();
@@ -130,8 +132,7 @@ public class FbxPlugin extends CordovaPlugin implements ServiceConnection,
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "成功授权，可以写入本地文件");
                 Intent intent = new Intent(mainActivity, DownloadService.class);
-                intent.putExtra(DownloadService.DOWNLOAD_URL_KEY,
-                        downloadUrl);
+                intent.putExtra(DownloadService.DOWNLOAD_URL_KEY, downloadUrl);
                 mainActivity.bindService(intent, FbxPlugin.this, Context.BIND_AUTO_CREATE);
             } else {
                 Log.d(TAG, "拒绝授权，无法写入本地文件");
@@ -152,7 +153,7 @@ public class FbxPlugin extends CordovaPlugin implements ServiceConnection,
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Log.d(TAG, "拒绝授权，不允许安装第三方应用");
                 Toast.makeText(mainActivity.getApplicationContext(), "拒绝授权,无法安装最新版本应用",
-                        Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_SHORT).show();
                 // 跳转到允许设置页面
                 Uri packageURI = Uri.parse("package:" + mainActivity.getPackageName());
                 Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, packageURI);

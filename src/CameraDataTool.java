@@ -31,6 +31,7 @@ public class CameraDataTool {
             String snapshotUrl = object.get("snapshotUrl").getAsString();
             Boolean isOnline = object.get("online").getAsBoolean();
             int cameraNo = object.get("cameraNo").getAsInt();
+            int shopId = object.get("shopId").getAsInt();
             cards.add(new CameraData(cameraId, cameraSns, cameraNo, cameraTitle, snapshotUrl, isOnline));
         }
         return cards;

@@ -67,10 +67,14 @@ public class LiveActivity extends AppCompatActivity implements Handler.Callback,
     public final int PLAY_PAUSE = 2;
 
     public static String mUploadUrl;
-    public static String mFormUrl;
+    public static String mCutImageUrl;
     public static String mApiData;
+    public static int mTermPlanId;
+    public static int mTermId;
+    public static String mTermName;
     public static String sAppKey;
     public static String sAccessToken;
+
     public EZPlayer mActivePlayer;
     public EZPlayer mActiveTalker;
     private int mPlayerStatus;
@@ -268,7 +272,7 @@ public class LiveActivity extends AppCompatActivity implements Handler.Callback,
                     return;
                 }
                 Bitmap bitmap = mActivePlayer.capturePicture();
-                new CutPopupWindow(LiveActivity.this, bitmap)
+                new CutPopupWindow(LiveActivity.this, bitmap,mStoreData.getStoreId())
                         .showAtLocation(findViewById(R.id.main_view),
                                 Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
                 break;
@@ -362,9 +366,12 @@ public class LiveActivity extends AppCompatActivity implements Handler.Callback,
         String accessToken = intent.getStringExtra("accessToken");
         mStoreData = (StoreData) intent.getSerializableExtra("storeData");
         mUploadUrl = intent.getStringExtra("uploadUrl");
-        mFormUrl = intent.getStringExtra("formUrl");
+        mCutImageUrl = intent.getStringExtra("cutImageUrl");
         mApiData = intent.getStringExtra("apiData");
         mCameras = CameraDataTool.getCardListFromJsonString(intent.getStringExtra("cameraData"));
+        mTermPlanId = Integer.parseInt(intent.getStringExtra("termPlanId"));
+        mTermId = Integer.parseInt(intent.getStringExtra("termId"));
+        mTermName =intent.getStringExtra("termName");
         for (CameraData camera : mCameras) {
             if (camera.getOnline()) {
                 mActiveCamera = camera;
