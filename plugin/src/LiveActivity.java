@@ -17,9 +17,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -85,6 +87,8 @@ public class LiveActivity extends AppCompatActivity implements Handler.Callback,
 
     private View mPlayContainerView;
     private SurfaceView mSurfaceView;
+    private ScaleGestureDetector mScaleGestureDetector;
+    private GestureDetector mGestureDetector;
     private View mHeadCtrl;
     private View mBottomCtrl;
     private ImageView mPlayBtn;
@@ -272,7 +276,7 @@ public class LiveActivity extends AppCompatActivity implements Handler.Callback,
                     return;
                 }
                 Bitmap bitmap = mActivePlayer.capturePicture();
-                new CutPopupWindow(LiveActivity.this, bitmap,mStoreData.getStoreId())
+                new CutPopupWindow(LiveActivity.this, bitmap, mStoreData.getStoreId())
                         .showAtLocation(findViewById(R.id.main_view),
                                 Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
                 break;
@@ -327,6 +331,8 @@ public class LiveActivity extends AppCompatActivity implements Handler.Callback,
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     hidePlayControl();
                 }
+                mGestureDetector.onTouchEvent(motionEvent);
+                mScaleGestureDetector.onTouchEvent(motionEvent);
                 break;
             }
             case R.id.talk_btn: {
@@ -371,7 +377,7 @@ public class LiveActivity extends AppCompatActivity implements Handler.Callback,
         mCameras = CameraDataTool.getCardListFromJsonString(intent.getStringExtra("cameraData"));
         mTermPlanId = Integer.parseInt(intent.getStringExtra("termPlanId"));
         mTermId = Integer.parseInt(intent.getStringExtra("termId"));
-        mTermName =intent.getStringExtra("termName");
+        mTermName = intent.getStringExtra("termName");
         for (CameraData camera : mCameras) {
             if (camera.getOnline()) {
                 mActiveCamera = camera;
@@ -416,6 +422,11 @@ public class LiveActivity extends AppCompatActivity implements Handler.Callback,
         mRecoverPlayView = findViewById(R.id.recover_loading_bar);
         mPauseView = (ImageView) findViewById(R.id.recover_holder_image);
         mSurfaceView.getHolder().addCallback(LiveActivity.this);
+
+        // 设置手势缩放
+        View view = findViewById(R.id.gesture_view);
+        mScaleGestureDetector = new ScaleGestureDetector(LiveActivity.this, new ScaleListener());
+        mGestureDetector = new GestureDetector(LiveActivity.this, new GestureListener());
         mPlayBtn.setOnClickListener(LiveActivity.this);
         mToolBtn.setOnClickListener(LiveActivity.this);
         mPlayContainerView.setOnTouchListener(LiveActivity.this);
@@ -486,6 +497,16 @@ public class LiveActivity extends AppCompatActivity implements Handler.Callback,
             initPlayer(mActiveCamera.getCameraSns(), mActiveCamera.getCameraNo());
             mActivePlayer.startRealPlay();
         }
+    }
+
+    /**
+     * 还原播放器的缩放，拖动
+     */
+    private void defaultPlayView() {
+        mSurfaceView.setX(0);
+        mSurfaceView.setY(0);
+        mSurfaceView.setScaleX(1);
+        mSurfaceView.setScaleY(1);
     }
 
     private void setPrepareMode() {
@@ -670,6 +691,35 @@ public class LiveActivity extends AppCompatActivity implements Handler.Callback,
             call.enqueue(LiveActivity.this);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            Log.d(TAG, "移动" + distanceX);
+            mSurfaceView.setX(mSurfaceView.getX() - distanceX);
+            mSurfaceView.setY(mSurfaceView.getY() - distanceY);
+            return true;
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            defaultPlayView();
+            return true;
+        }
+    }
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            mSurfaceView.setPivotX(detector.getFocusX());
+            mSurfaceView.setPivotY(detector.getFocusY());
+            mSurfaceView.setScaleX(mSurfaceView.getScaleX() * detector.getScaleFactor());
+            mSurfaceView.setScaleY(mSurfaceView.getScaleY() * detector.getScaleFactor());
+            return true;
         }
     }
 

@@ -26,6 +26,8 @@ android.defaultConfig {
 ```
 
 ## 参考代码
+
+### 回放
 ```js
 window.FBX && window.FBX.call('playback', null, null, [
     // appKey-萤石云
@@ -40,3 +42,5 @@ window.FBX && window.FBX.call('playback', null, null, [
     1
 ]);
 ```
+
+### 直播

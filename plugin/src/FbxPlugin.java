@@ -55,6 +55,7 @@ public class FbxPlugin extends CordovaPlugin implements ServiceConnection,
             intent.putExtra("termPlanId",args.getString(7));
             intent.putExtra("termId",args.getString(8));
             intent.putExtra("termName",args.getString(9));
+            Log.d(TAG, "2222224343223");
             mainActivity.startActivity(intent);
         } else if (action.equals("update")) {
             Log.d(TAG, "调用应用更新服务");

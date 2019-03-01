@@ -32,7 +32,7 @@ public class CameraDataTool {
             Boolean isOnline = object.get("online").getAsBoolean();
             int cameraNo = object.get("cameraNo").getAsInt();
             int shopId = object.get("shopId").getAsInt();
-            cards.add(new CameraData(cameraId, cameraSns, cameraNo, cameraTitle, snapshotUrl, isOnline));
+            cards.add(new CameraData(cameraId, cameraSns, cameraNo, cameraTitle, snapshotUrl, isOnline, shopId));
         }
         return cards;
     }

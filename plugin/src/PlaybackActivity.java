@@ -7,6 +7,9 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -19,12 +22,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -68,6 +78,8 @@ public class PlaybackActivity extends AppCompatActivity implements
     private ImageView mRecordBtn;
     private ImageView mPlayBtn;
     private SurfaceView mPlayView;
+    private ScaleGestureDetector mScaleGestureDetector;
+    private GestureDetector mGestureDetector;
     private Calendar mStartTime;
     private Calendar mEndTime;
     private EZPlayer mEZPlayer;
@@ -75,6 +87,7 @@ public class PlaybackActivity extends AppCompatActivity implements
     private ProgressBar mLoadingBar;
     private int mPlayStatus = 0;
     private boolean isRecord = Boolean.FALSE;
+    private boolean isFullScreen = Boolean.FALSE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +110,14 @@ public class PlaybackActivity extends AppCompatActivity implements
         } else {
             Log.d(TAG, "关闭当前活动");
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (isFullScreen) {
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         }
     }
 
@@ -193,7 +214,7 @@ public class PlaybackActivity extends AppCompatActivity implements
 
         } else {
             mEndTime = Calendar.getInstance();
-            mEndTime.set(year, month, day);
+            mEndTime.set(year, month, day, 23, 59);
             mEndBtn.setText(LoadSDCardVideoTask.formatCalendarDate(mEndTime));
         }
         closeDateDialog();
@@ -316,8 +337,8 @@ public class PlaybackActivity extends AppCompatActivity implements
                 Log.d(TAG, "播放器是空的");
                 showToast("萤石云服务异常～");
             }
-             mEZPlayer.setSurfaceHold(mPlayView.getHolder());
-             mEZPlayer.setHandler(new Handler(PlaybackActivity.this));
+            mEZPlayer.setSurfaceHold(mPlayView.getHolder());
+            mEZPlayer.setHandler(new Handler(PlaybackActivity.this));
         }
         mEZPlayer.startPlayback(startTime, endTime);
         showLoading();
@@ -396,8 +417,13 @@ public class PlaybackActivity extends AppCompatActivity implements
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         ViewGroup.LayoutParams layoutParams = mPlayContainer.getLayoutParams();
-        layoutParams.height = (int) (displaymetrics.widthPixels / (16.0 / 9));
+        int screenWidth = Math.min(displaymetrics.widthPixels, displaymetrics.heightPixels);
+        layoutParams.width = screenWidth;
+        layoutParams.height = (int) (screenWidth / (16.0 / 9));
+        // Log.d(TAG, "宽度" + layoutParams.width + "高度" + layoutParams.height);
         mPlayContainer.setLayoutParams(layoutParams);
+        defaultPlayView();
+        isFullScreen = Boolean.FALSE;
     }
 
     /**
@@ -410,8 +436,21 @@ public class PlaybackActivity extends AppCompatActivity implements
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         ViewGroup.LayoutParams layoutParams = mPlayContainer.getLayoutParams();
-        layoutParams.height = displaymetrics.heightPixels;
+        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
         mPlayContainer.setLayoutParams(layoutParams);
+        defaultPlayView();
+        isFullScreen = Boolean.TRUE;
+    }
+
+    /**
+     * 还原播放器的缩放，拖动
+     */
+    private void defaultPlayView() {
+        mPlayView.setX(0);
+        mPlayView.setY(0);
+        mPlayView.setScaleX(1);
+        mPlayView.setScaleY(1);
     }
 
     private void updateDateView(long time) {
@@ -447,8 +486,23 @@ public class PlaybackActivity extends AppCompatActivity implements
                 PlaybackActivity.this);
         mDateView = (TextView) findViewById(R.id.date_view);
         mPlayContainer = findViewById(R.id.playback_content);
+
         mPlayView = (SurfaceView) findViewById(R.id.playback_view);
         mPlayView.getHolder().addCallback(PlaybackActivity.this);
+
+        // 设置手势缩放
+        View view = findViewById(R.id.gesture_view);
+        mScaleGestureDetector = new ScaleGestureDetector(PlaybackActivity.this, new ScaleListener());
+        mGestureDetector = new GestureDetector(PlaybackActivity.this, new GestureListener());
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                mGestureDetector.onTouchEvent(motionEvent);
+                mScaleGestureDetector.onTouchEvent(motionEvent);
+                return true;
+            }
+        });
+
         mPickerView = findViewById(R.id.calendar_container);
         mStartBtn = (Button) findViewById(R.id.btn_start_time);
         mEndBtn = (Button) findViewById(R.id.btn_end_time);
@@ -506,6 +560,35 @@ public class PlaybackActivity extends AppCompatActivity implements
                 file.mkdirs();
             }
             return rootPath + Calendar.getInstance().getTimeInMillis() + ".mp4";
+        }
+    }
+
+    private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            Log.d(TAG, "移动" + distanceX);
+            mPlayView.setX(mPlayView.getX() - distanceX);
+            mPlayView.setY(mPlayView.getY() - distanceY);
+            return true;
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            defaultPlayView();
+            return true;
+        }
+    }
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            mPlayView.setPivotX(detector.getFocusX());
+            mPlayView.setPivotY(detector.getFocusY());
+            mPlayView.setScaleX(mPlayView.getScaleX() * detector.getScaleFactor());
+            mPlayView.setScaleY(mPlayView.getScaleY() * detector.getScaleFactor());
+            return true;
         }
     }
 

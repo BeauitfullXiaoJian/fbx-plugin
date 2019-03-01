@@ -18,10 +18,18 @@
         android:gravity="center">
 
         <!-- 播放窗口 -->
-        <SurfaceView
-            android:id="@+id/play_view"
+        <FrameLayout
+            android:id="@+id/gesture_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:overScrollMode="never">
+
+            <SurfaceView
+                android:id="@+id/play_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </FrameLayout>
 
         <!-- 暂停时的截图 -->
         <ImageView
@@ -49,8 +57,7 @@
                 android:layout_height="match_parent"
                 android:contentDescription="加载背景"
                 android:scaleType="centerCrop"
-                app:srcCompat="@drawable/ic_play"
-                />
+                app:srcCompat="@drawable/ic_play" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -126,11 +133,11 @@
 
             <RelativeLayout
                 android:id="@+id/btn_fullscreen"
-                android:focusable="true"
-                android:clickable="true"
-                android:foreground="?attr/selectableItemBackground"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
 
                 <ImageView
                     android:layout_width="30dp"
