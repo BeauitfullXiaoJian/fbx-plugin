@@ -34,6 +34,8 @@
 @property (weak, nonatomic) IBOutlet UISlider *soundSlider;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *loadingBar;
 @property (weak, nonatomic) IBOutlet UIStackView *controlView;
+@property (weak, nonatomic) IBOutlet UINavigationBar *navBar;
+@property (weak, nonatomic) IBOutlet UINavigationItem *navItem;
 
 @end
 
@@ -54,6 +56,21 @@
     doubleTapGesture.numberOfTapsRequired =2;
     doubleTapGesture.numberOfTouchesRequired =1;
     [_playView addGestureRecognizer:doubleTapGesture];
+    
+    // 设置导航条
+    [_navBar setBackgroundImage:[[UIImage alloc] init] forBarMetrics:UIBarMetricsDefault];
+    _navItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemReply target:self action:@selector(backAction)];
+    [_navBar setShadowImage:[[UIImage alloc] init]];
+
+}
+
+-(void)viewWillDisappear{
+    
+}
+
+- (void)backAction{
+    NSLog(@"返回");
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void) viewWillDisappear:(BOOL)animated

@@ -331,6 +331,7 @@
 
 - (void)playback:(CDVInvokedUrlCommand *)command{
     [self log:@"启动回放"];
+    [self.mActivePlayer stopRealPlay];
     NSString* appKey = [command.arguments objectAtIndex:0];
     NSString* accessToken = [command.arguments objectAtIndex:1];
     NSString* cameraName = [command.arguments objectAtIndex:2];

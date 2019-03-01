@@ -10,4 +10,7 @@ android.defaultConfig {
     vectorDrawables {
         useSupportLibrary true
     }
+    ndk {
+        abiFilters "armeabi-v7a", "x86", "armeabi"
+    }
 }
