@@ -1,6 +1,9 @@
 # DDXX 视频支持 涂鸦
 
-## 相关说明
+## 注意
+这个项目为指定应用开发，请不要直接用于您的项目，建议只参考Cordova的萤石云SDK接入方法。
+
+## 包含功能
 1. 应用更新（Android）
 2. 视频预览
 3. 视频回放
@@ -44,3 +47,28 @@ window.FBX && window.FBX.call('playback', null, null, [
 ```
 
 ### 直播
+```js
+ window.FBX && window.FBX.call('live', null, null, [
+     // appKey-萤石云
+     '1117e8fc982f40c88570791a2127230a',
+     // accessToken-萤石云
+     'at.c8ws6jvrdry6kt31ai4nq71ddwoa7a9m-35zayd8x20-1okae5n-pythgjpix',
+     // 店铺相关数据
+     JSON.stringify({ storeId: 629, storeTitle: '测试店铺' }),
+     // 店铺摄像头列表数据
+     JSON.stringify([
+         { shopId: 1, cameraId: 1, cameraNo: 1, cameraSns: '116382128', cameraTitle: '大门口', online: true, snapshotUrl: 'https://picsum.photos/600/360?100' },
+         { shopId: 1, cameraId: 2, cameraNo: 1, cameraSns: 'C39830868', cameraTitle: '杂物间', online: true, snapshotUrl: 'https://picsum.photos/600/360?200' },
+     ]),
+     // 上传地址
+     '.......................',
+     // 截图上传地址
+     '/web/camera/photo/upload',
+     // 表单提交地址
+     '/web/check/table/saveGradeTableOnlineCheck',
+     // 权限令牌数据
+     '1',
+     '1',
+     'termName'
+    ]);
+```
